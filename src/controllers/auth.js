@@ -6,7 +6,6 @@ import crypto from 'crypto'
 import mail from "../utils/mail.js"
 
 const VERIFICATION_LINK = process.env.VERIFICATION_LINK
-console.log(VERIFICATION_LINK);
 export const signUp = async (req, res) => {
     const { name, email, password } = req.body
 
@@ -19,9 +18,24 @@ export const signUp = async (req, res) => {
     await AuthVerificationTokenModel.create({ owner: user._id, token })
 
     const link = `${VERIFICATION_LINK}?id=${user._id}&token=${token}`;
-    console.log(link);
 
     await mail.sendVerificationLink(user.email, link)
 
     res.json({ message: "Please check your inbox!" })
+}
+
+
+export const verifyEmail = async (req, res) => {
+    const { id, token } = req.body
+
+    const authToken = await AuthVerificationTokenModel.findOne({ owner: id })
+    if (!authToken) return sendErrorRes(res, "Unauthorized request, invalid id!", 400)
+
+    const isMatched = await authToken.compareToken(token)
+    if (!isMatched) return sendErrorRes(res, "Invalid token!", 400)
+
+    await AuthVerificationTokenModel.findByIdAndDelete(authToken._id)
+    await UserModel.findByIdAndUpdate(id, { verified: true })
+
+    res.json({ message: "Thank you for joining us, your email is verified!" })
 }
