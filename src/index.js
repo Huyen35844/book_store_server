@@ -6,6 +6,7 @@ import "express-async-errors"
 import "./db/index.js"
 
 const app = express()
+app.use(express.static("src/public"))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
@@ -30,4 +31,5 @@ app.listen(8000, () => {
  * app.listen khai báo port và callback thông báo đang chạy
  * kết nối với db mongo đơn giản bằng cách import
  * thêm import cho thư viện dotenv trên cùng
+ * thêm express.static() để tải các thành phần html, css lên
  */

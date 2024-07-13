@@ -1,3 +1,4 @@
+import { isValidObjectId } from 'mongoose';
 import * as yup from 'yup'
 
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -26,10 +27,31 @@ const name = {
         .required("Name is missing!")
 }
 
+const token = {
+    token: yup.string().required("Token is missing!")
+}
+
+const id = {
+    id: yup
+        .string()
+        .test({
+            name: "valid-id",
+            message: "Invalid user id",
+            test: (value) => {
+                return isValidObjectId(value)
+            }
+        })
+}
+
 export const signUpSchema = yup.object({
     ...name,
     ...email,
     ...password
+})
+
+export const verifyEmailSchema = yup.object({
+    ...id,
+    ...token
 })
 
 /**
