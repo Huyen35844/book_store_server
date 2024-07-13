@@ -2,10 +2,13 @@ import { log } from "console"
 import AuthVerificationTokenModel from "../models/AuthVerificationTokenModel.js"
 import UserModel from "../models/userModel.js"
 import { sendErrorRes } from "../utils/sendErrorRes.js"
-import crypto from 'crypto'
+import crypto, { verify } from 'crypto'
 import mail from "../utils/mail.js"
+import jwt from "jsonwebtoken"
 
 const VERIFICATION_LINK = process.env.VERIFICATION_LINK
+const JWT_SECRET = process.env.JWT_SECRET
+
 export const signUp = async (req, res) => {
     const { name, email, password } = req.body
 
@@ -38,4 +41,36 @@ export const verifyEmail = async (req, res) => {
     await UserModel.findByIdAndUpdate(id, { verified: true })
 
     res.json({ message: "Thank you for joining us, your email is verified!" })
+}
+
+export const signIn = async (req, res) => {
+    const { email, password } = req.body
+
+    const user = await UserModel.findOne({ email })
+    if (!user) return sendErrorRes(res, "Email/Password is mismatch!User not found!", 400)
+
+    const isMatched = await user.comparePassword(password)
+    if (!isMatched) return sendErrorRes(res, "Email/Password is mismatch!", 400)
+
+    const payload = { id: user._id }
+    const accessToken = jwt.sign(payload, JWT_SECRET, { expiresIn: "15m" })
+    const refreshToken = jwt.sign(payload, JWT_SECRET)
+
+    if (!user.tokens) user.tokens = [refreshToken]
+    else user.tokens.push(refreshToken)
+
+    await user.save()
+
+    res.json({
+        profile: {
+            id: user._id,
+            email: user.email,
+            name: user.name,
+            verified: user.verified,
+        },
+        tokens: {
+            refresh: refreshToken,
+            access: accessToken
+        }
+    })
 }
