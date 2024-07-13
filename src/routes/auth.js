@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { signUpSchema, verifyEmailSchema } from "../utils/validationSchema.js";
 import validate from "../middleware/validator.js";
-import { signUp, verifyEmail } from "../controllers/auth.js";
+import { signIn, signUp, verifyEmail } from "../controllers/auth.js";
 
 const authRouter = Router()
 
@@ -19,4 +19,9 @@ authRouter.post("/sign-up", validate(signUpSchema), signUp)
 // Update verified property as true in userModel
 authRouter.post("/verify-email", validate(verifyEmailSchema), verifyEmail)
 
+// Check email and password 
+// Generate access and refresh tokens 
+// Gtore refresh token in database 
+// Return profile and tokens for user
+authRouter.post("/sign-in", signIn)
 export default authRouter;
