@@ -67,10 +67,16 @@ export const signIn = async (req, res) => {
             email: user.email,
             name: user.name,
             verified: user.verified,
+            avatar: user.avatar?.url
         },
         tokens: {
             refresh: refreshToken,
             access: accessToken
         }
     })
+}
+
+
+export const getProfile = async (req, res) => {
+    res.json({ ...req.user })
 }

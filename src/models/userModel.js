@@ -7,7 +7,11 @@ const UserSchema = new Schema(
         email: { type: String, unique: true, required: true },
         password: { type: String, required: true },
         verified: { type: Boolean, default: false },
-        tokens: [{ type: String }]
+        tokens: [{ type: String }],
+        avatar: {
+            url: { type: String },
+            id: { type: String }
+        }
     },
     { timestamps: true }
 )

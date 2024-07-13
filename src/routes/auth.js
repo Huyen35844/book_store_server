@@ -1,7 +1,8 @@
 import { Router } from "express";
 import { signUpSchema, verifyEmailSchema } from "../utils/validationSchema.js";
 import validate from "../middleware/validator.js";
-import { signIn, signUp, verifyEmail } from "../controllers/auth.js";
+import { getProfile, signIn, signUp, verifyEmail } from "../controllers/auth.js";
+import { isAuth } from "../middleware/auth.js";
 
 const authRouter = Router()
 
@@ -24,4 +25,11 @@ authRouter.post("/verify-email", validate(verifyEmailSchema), verifyEmail)
 // Gtore refresh token in database 
 // Return profile and tokens for user
 authRouter.post("/sign-in", signIn)
+
+// Find user by email 
+// Delete the record has the owner's id in PasswordResetTokenModel 
+// Create a token 
+// Create a new object in PasswordResetTokenModel
+// Send the link has the token and id inside
+authRouter.get("/profile", isAuth, getProfile)
 export default authRouter;
