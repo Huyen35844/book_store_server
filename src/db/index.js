@@ -6,3 +6,10 @@ connect(uri).then(() => {
 }).catch((err) => {
     console.log('db connection error: ', err.message);
 })
+
+
+/**
+ * sử dụng connect trong mongoose để kết nối {connect}
+ * trong connect có uri (đường dẫn db)
+ * sử dụng then catch, thông báo cho trường hợp thành công và thất bại
+ */
