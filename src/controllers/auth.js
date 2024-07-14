@@ -149,3 +149,21 @@ export const generateForgetPasswordLink = async (req, res) => {
 export const grantValid = async (req, res) => {
     res.send({ valid: true })
 }
+
+export const updatePassword = async (req, res) => {
+    const { id, password } = req.body
+
+    const user = await UserModel.findById(id)
+    if (!user) return sendErrorRes(res, "Unauthorized request!", 400)
+
+    const isMatched = await user.comparePassword(password)
+    if (isMatched) return sendErrorRes(res, "New password must be different!", 400)
+
+    user.password = password
+    await user.save()
+
+    await PasswordResetTokenModel.findOneAndDelete({ owner: user._id })
+
+    await mail.sendPasswordUpdateMessage(user.email)
+    res.json({ message: "Password resets successfully" })
+}

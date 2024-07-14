@@ -54,6 +54,12 @@ export const verifyTokenSchema = yup.object({
     ...token
 })
 
+export const resetPasswordSchema = yup.object({
+    ...id,
+    ...token,
+    ...password
+})
+
 
 /**
  * import * as yup để khi sử dụng bất kì thứ gì trong yup chỉ cần yup.   còn không phải import từng cái rất lâu
