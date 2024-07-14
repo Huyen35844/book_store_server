@@ -31,5 +31,5 @@ authRouter.post("/sign-in", signIn)
 // Create a token 
 // Create a new object in PasswordResetTokenModel
 // Send the link has the token and id inside
-authRouter.get("/profile", isAuth, getProfile)
+authRouter.get("/get-profile", isAuth, getProfile)
 export default authRouter;
