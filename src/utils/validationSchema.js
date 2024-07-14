@@ -49,10 +49,11 @@ export const signUpSchema = yup.object({
     ...password
 })
 
-export const verifyEmailSchema = yup.object({
+export const verifyTokenSchema = yup.object({
     ...id,
     ...token
 })
+
 
 /**
  * import * as yup để khi sử dụng bất kì thứ gì trong yup chỉ cần yup.   còn không phải import từng cái rất lâu

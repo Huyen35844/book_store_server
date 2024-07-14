@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { signUpSchema, verifyEmailSchema } from "../utils/validationSchema.js";
+import { signUpSchema, verifyTokenSchema } from "../utils/validationSchema.js";
 import validate from "../middleware/validator.js";
-import { generateForgetPasswordLink, getProfile, grantTokens, signIn, signOut, signUp, verifyEmail } from "../controllers/auth.js";
-import { isAuth } from "../middleware/auth.js";
+import { generateForgetPasswordLink, getProfile, grantTokens, grantValid, signIn, signOut, signUp, verifyEmail } from "../controllers/auth.js";
+import { isAuth, isValidPassResetToken } from "../middleware/auth.js";
 
 const authRouter = Router()
 
@@ -18,7 +18,7 @@ authRouter.post("/sign-up", validate(signUpSchema), signUp)
 // compare the token in the link vs the token in database 
 // delete that record (authVerificationModel) if verify successfully 
 // Update verified property as true in userModel
-authRouter.post("/verify-email", validate(verifyEmailSchema), verifyEmail)
+authRouter.post("/verify-email", validate(verifyTokenSchema), verifyEmail)
 
 // Check email and password 
 // Generate access and refresh tokens 
@@ -47,4 +47,12 @@ authRouter.post("/sign-out", isAuth, signOut)
 // Create a new object in PasswordResetTokenModel
 // Send the link has the token and id inside
 authRouter.post("/forget-password", generateForgetPasswordLink)
+
+// =>After clicking the reset password link
+// Verify id and token in the link
+// Validating id and token 
+// FindById in PasswordResetTokenModel 
+// Compare provided token to token in database 
+// Return valid: true
+authRouter.post("/verify-pass-reset-token", validate(verifyTokenSchema), isValidPassResetToken, grantValid)
 export default authRouter;

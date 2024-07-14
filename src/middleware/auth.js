@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import { sendErrorRes } from '../utils/sendErrorRes.js';
 import UserModel from '../models/userModel.js';
+import PasswordResetTokenModel from '../models/PasswordResetTokenModel';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 const { JsonWebTokenError, TokenExpiredError } = jwt;
@@ -41,4 +42,16 @@ export const isAuth = async (req, res, next) => {
         next(error)
     }
 };
+
+export const isValidPassResetToken = async (req, res, next) => {
+    const { id, token } = req.body
+
+    const resetPassToken = await PasswordResetTokenModel.findOne({ owner: id })
+    if (!resetPassToken) return sendErrorRes(res, "Unauthorized request!", 400)
+
+    const isMatched = await resetPassToken.compareToken(token)
+    if (!isMatched) return sendErrorRes(res, "Invalid token!", 400)
+
+    next()
+}
 
