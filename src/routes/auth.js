@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { signUpSchema, verifyEmailSchema } from "../utils/validationSchema.js";
 import validate from "../middleware/validator.js";
-import { getProfile, signIn, signUp, verifyEmail } from "../controllers/auth.js";
+import { getProfile, grantTokens, signIn, signUp, verifyEmail } from "../controllers/auth.js";
 import { isAuth } from "../middleware/auth.js";
 
 const authRouter = Router()
@@ -32,4 +32,7 @@ authRouter.post("/sign-in", signIn)
 // Create a new object in PasswordResetTokenModel
 // Send the link has the token and id inside
 authRouter.get("/profile", isAuth, getProfile)
+
+// When access token expired, send refreshToken to the server to request new tokens (access, refresh).
+authRouter.post('/grant-token', grantTokens)
 export default authRouter;
