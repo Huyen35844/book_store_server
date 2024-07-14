@@ -7,9 +7,11 @@ import mail from "../utils/mail.js"
 import jwt from "jsonwebtoken"
 import mongoose from "mongoose"
 import { access } from "fs"
+import PasswordResetTokenModel from "../models/PasswordResetTokenModel"
 
 const VERIFICATION_LINK = process.env.VERIFICATION_LINK
 const JWT_SECRET = process.env.JWT_SECRET
+const PASSWORD_RESET_LINK = process.env.PASSWORD_RESET_LINK
 
 export const signUp = async (req, res) => {
     const { name, email, password } = req.body
@@ -121,4 +123,24 @@ export const signOut = async (req, res) => {
     await user.save()
 
     res.send()
+}
+
+export const generateForgetPasswordLink = async (req, res) => {
+    const { email } = req.body
+
+    const user = await UserModel.findOne({ email })
+    if (!user) return sendErrorRes(res, "Unauthorized request, user not found!", 400)
+
+    // Remove token in the case of sending the link earlier but user hasn't verify it yet and 
+    // if we keep sending one more link, that user will have two veryfing link 
+    // so make sure to remove the previous one before creating a new one
+    await PasswordResetTokenModel.findOneAndDelete({ owner: user._id })
+
+    const token = crypto.randomBytes(36).toString("hex")
+    await PasswordResetTokenModel.create({ owner: user._id, token })
+
+    const link = `${PASSWORD_RESET_LINK}?id=${user._id}&token=${token}`
+    await mail.sendPasswordResetLink(user.email, link)
+
+    res.json({ message: "Please check your inbox!" })
 }

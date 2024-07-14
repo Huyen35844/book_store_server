@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { signUpSchema, verifyEmailSchema } from "../utils/validationSchema.js";
 import validate from "../middleware/validator.js";
-import { getProfile, grantTokens, signIn, signOut, signUp, verifyEmail } from "../controllers/auth.js";
+import { generateForgetPasswordLink, getProfile, grantTokens, signIn, signOut, signUp, verifyEmail } from "../controllers/auth.js";
 import { isAuth } from "../middleware/auth.js";
 
 const authRouter = Router()
@@ -40,4 +40,11 @@ authRouter.post('/grant-token', grantTokens)
 // Find user in database with that id and refresh token from body 
 // Filter that refresh token in tokens property
 authRouter.post("/sign-out", isAuth, signOut)
+
+// Find user by email 
+// Delete the record has the owner's id in PasswordResetTokenModel 
+// Create a token 
+// Create a new object in PasswordResetTokenModel
+// Send the link has the token and id inside
+authRouter.post("/forget-password", generateForgetPasswordLink)
 export default authRouter;
