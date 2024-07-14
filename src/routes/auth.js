@@ -31,7 +31,7 @@ authRouter.post("/sign-in", signIn)
 // Create a token 
 // Create a new object in PasswordResetTokenModel
 // Send the link has the token and id inside
-authRouter.get("/profile", isAuth, getProfile)
+authRouter.get("/get-profile", isAuth, getProfile)
 
 // When access token expired, send refreshToken to the server to request new tokens (access, refresh).
 authRouter.post('/grant-token', grantTokens)
