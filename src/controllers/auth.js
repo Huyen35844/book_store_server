@@ -1,4 +1,4 @@
-import { log } from "console"
+import { log, profile } from "console"
 import AuthVerificationTokenModel from "../models/AuthVerificationTokenModel.js"
 import UserModel from "../models/userModel.js"
 import { sendErrorRes } from "../utils/sendErrorRes.js"
@@ -166,4 +166,16 @@ export const updatePassword = async (req, res) => {
 
     await mail.sendPasswordUpdateMessage(user.email)
     res.json({ message: "Password resets successfully" })
+}
+
+export const updateProfile = async (req, res) => {
+    const { name } = req.body
+
+    if (typeof name != "string" || name.trim().length < 3) {
+        return sendErrorRes(res, "Invalid name!", 400)
+    }
+
+    await UserModel.findByIdAndUpdate(req.user.id, name)
+
+    res.json({ profile: { ...req.user, name } })
 }
