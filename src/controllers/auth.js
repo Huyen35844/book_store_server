@@ -144,3 +144,8 @@ export const generateForgetPasswordLink = async (req, res) => {
 
     res.json({ message: "Please check your inbox!" })
 }
+
+
+export const grantValid = async (req, res) => {
+    res.send({ valid: true })
+}
