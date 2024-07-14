@@ -109,3 +109,16 @@ export const grantTokens = async (req, res) => {
         tokens: { refreshToken: newRefreshToken, accessToken: newAccessToken }
     })
 }
+
+export const signOut = async (req, res) => {
+    const { refreshToken } = req.body
+
+    const user = await UserModel.findOne({ _id: req.user.id, tokens: refreshToken })
+    if (!user) return sendErrorRes(res, "Unauthorized request, user not found!", 400)
+
+    const filteredTokens = user.tokens.filter((token) => token != refreshToken)
+    user.tokens = filteredTokens
+    await user.save()
+
+    res.send()
+}
