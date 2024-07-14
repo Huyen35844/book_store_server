@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { signUpSchema, verifyTokenSchema } from "../utils/validationSchema.js";
+import { resetPasswordSchema, signUpSchema, verifyTokenSchema } from "../utils/validationSchema.js";
 import validate from "../middleware/validator.js";
-import { generateForgetPasswordLink, getProfile, grantTokens, grantValid, signIn, signOut, signUp, verifyEmail } from "../controllers/auth.js";
+import { generateForgetPasswordLink, getProfile, grantTokens, grantValid, signIn, signOut, signUp, updatePassword, verifyEmail } from "../controllers/auth.js";
 import { isAuth, isValidPassResetToken } from "../middleware/auth.js";
 
 const authRouter = Router()
@@ -55,4 +55,12 @@ authRouter.post("/forget-password", generateForgetPasswordLink)
 // Compare provided token to token in database 
 // Return valid: true
 authRouter.post("/verify-pass-reset-token", validate(verifyTokenSchema), isValidPassResetToken, grantValid)
+
+// Validating id, token, password 
+// Do the same steps as verify-pass-reset-token 
+// Find user by id 
+// Compare provided password to previous password 
+// Update password 
+// Delete the record with this id in PasswordResetTokenModel
+authRouter.post("/reset-pass", validate(resetPasswordSchema), isValidPassResetToken, updatePassword)
 export default authRouter;

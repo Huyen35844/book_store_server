@@ -25,9 +25,19 @@ const sendPasswordResetLink = async (email, link) => {
         html: `<h1>Please click on <a href="${link}"> this link </a> to reset your password!</h1>`
     })
 }
+
+const sendPasswordUpdateMessage = async (email) => {
+    transporter.sendMail({
+        from: process.env.MAIL_AUTH_USER,
+        to: email,
+        subject: "Reset your password successfully from Book Store",
+        html: `<h1>Your password is updated, you can now use your new password</h1>`
+    })
+}
 const mail = {
     sendVerificationLink,
-    sendPasswordResetLink
+    sendPasswordResetLink,
+    sendPasswordUpdateMessage
 }
 
 export default mail;
