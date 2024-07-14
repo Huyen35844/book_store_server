@@ -5,6 +5,8 @@ import { sendErrorRes } from "../utils/sendErrorRes.js"
 import crypto, { verify } from 'crypto'
 import mail from "../utils/mail.js"
 import jwt from "jsonwebtoken"
+import mongoose from "mongoose"
+import { access } from "fs"
 
 const VERIFICATION_LINK = process.env.VERIFICATION_LINK
 const JWT_SECRET = process.env.JWT_SECRET
@@ -76,7 +78,34 @@ export const signIn = async (req, res) => {
     })
 }
 
-
 export const getProfile = async (req, res) => {
     res.json({ ...req.user })
+}
+
+export const grantTokens = async (req, res) => {
+    const { refreshToken } = req.body
+    if (!refreshToken) return sendErrorRes(res, "Unauthorized request!", 400)
+
+    const payload = jwt.verify(refreshToken, JWT_SECRET)
+    if (!payload.id) return sendErrorRes(res, "Unauthorized request!", 400)
+    const userId = new mongoose.Types.ObjectId(payload.id)
+
+    const user = await UserModel.findOne({ _id: userId, tokens: refreshToken })
+    if (!user) {
+        //user is compromised, remove all the previous tokens
+        await UserModel.findByIdAndUpdate(payload.id, { tokens: [] })
+        return sendErrorRes(res, "Unauthorized request!", 400)
+    }
+
+    const newRefreshToken = jwt.sign({ id: user._id }, JWT_SECRET)
+    const newAccessToken = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: "15m" })
+
+    const filteredTokens = user.tokens.filter((token) => token != refreshToken)
+    user.tokens = filteredTokens
+    user.tokens.push(newRefreshToken)
+    await user.save()
+
+    res.json({
+        tokens: { refreshToken: newRefreshToken, accessToken: newAccessToken }
+    })
 }
