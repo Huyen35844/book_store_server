@@ -71,6 +71,11 @@ authRouter.post("/reset-pass", validate(resetPasswordSchema), isValidPassResetTo
 // Return the updated data
 authRouter.post("/update-profile", isAuth, fileParer, validate(updateProfileSchema), updateProfile)
 
+// Read id from req.user
+// Delete the previous record with the id that sign up has left, user hasn't verified
+// Create token, link
+// Create new record includes owner: id, token
+// Send email including id and token
 authRouter.post("/generate-verification-link", isAuth, generateVerificationLink)
 
 export default authRouter;
