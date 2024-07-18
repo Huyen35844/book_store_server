@@ -236,3 +236,13 @@ export const updateAvatar = async (req, res) => {
 
     res.json({ profile: { ...req.user, avatar: user.avatar.url } })
 }
+
+export const generateVerificationLink = async (req, res) => {
+    const { id } = req.user
+    await AuthVerificationTokenModel.findOneAndDelete({ owner: id })
+    const token = crypto.randomBytes(36).toString("hex")
+    const link = `${VERIFICATION_LINK}?id=${id}&token=${token}`
+    await AuthVerificationTokenModel.create({ owner: id, token })
+    await mail.sendVerificationLink(req.user.email, link)
+    res.json({ message: "Please check your inbox!" })
+}
