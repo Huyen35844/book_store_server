@@ -4,7 +4,7 @@ import * as yup from 'yup'
 const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const passwordRegex =
     /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#\$%\^&\*])[a-zA-Z\d!@#\$%\^&\*]+$/;
-
+const phoneNumberRegex = /^(?:\+84|0)(?:\d{9}|\d{8})$/;
 
 const password = {
     password: yup
@@ -43,6 +43,16 @@ const id = {
         })
 }
 
+const phoneNumber = {
+    phoneNumber: yup.string().required("Phone number is missing!").matches(phoneNumberRegex)
+}
+
+const address = {
+    address: yup
+        .string()
+        .required("Address is missing!")
+}
+
 export const signUpSchema = yup.object({
     ...name,
     ...email,
@@ -58,6 +68,12 @@ export const resetPasswordSchema = yup.object({
     ...id,
     ...token,
     ...password
+})
+
+export const updateProfileSchema = yup.object({
+    ...name,
+    ...address,
+    ...phoneNumber
 })
 
 

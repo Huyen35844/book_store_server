@@ -169,13 +169,9 @@ export const updatePassword = async (req, res) => {
 }
 
 export const updateProfile = async (req, res) => {
-    const { name } = req.body
+    const { name, phoneNumber, address } = req.body
 
-    if (typeof name != "string" || name.trim().length < 3) {
-        return sendErrorRes(res, "Invalid name!", 400)
-    }
+    await UserModel.findByIdAndUpdate(req.user.id, { name, phoneNumber, address })
 
-    await UserModel.findByIdAndUpdate(req.user.id, name)
-
-    res.json({ profile: { ...req.user, name } })
+    res.json({ profile: { ...req.user, name, phoneNumber, address } })
 }

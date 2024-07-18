@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { resetPasswordSchema, signUpSchema, verifyTokenSchema } from "../utils/validationSchema.js";
+import { resetPasswordSchema, signUpSchema, updateProfileSchema, verifyTokenSchema } from "../utils/validationSchema.js";
 import validate from "../middleware/validator.js";
 import { generateForgetPasswordLink, getProfile, grantTokens, grantValid, signIn, signOut, signUp, updatePassword, updateProfile, verifyEmail } from "../controllers/auth.js";
 import { isAuth, isValidPassResetToken } from "../middleware/auth.js";
@@ -68,5 +68,5 @@ authRouter.post("/reset-pass", validate(resetPasswordSchema), isValidPassResetTo
 // Validate data 
 // Find and update 
 // Return the updated data
-authRouter.post("/update-profile", isAuth, updateProfile)
+authRouter.post("/update-profile", isAuth, validate(updateProfileSchema), updateProfile)
 export default authRouter;

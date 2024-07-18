@@ -1,5 +1,5 @@
 import { sendErrorRes } from "../utils/sendErrorRes.js"
-
+import * as yup from "yup"
 const validate = (schema) => {
     return async (req, res, next) => {
         //set abortEarly as true, yup catchs the error not in order
