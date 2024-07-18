@@ -25,7 +25,9 @@ export const isAuth = async (req, res, next) => {
             name: user.name,
             email: user.email,
             verified: user.verified,
-            avatar: user.avatar?.url
+            avatar: user.avatar?.url,
+            address: user.address,
+            phoneNumber: user.phoneNumber
         }
 
         next()

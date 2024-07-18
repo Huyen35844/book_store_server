@@ -8,6 +8,8 @@ const UserSchema = new Schema(
         password: { type: String, required: true },
         verified: { type: Boolean, default: false },
         tokens: [{ type: String }],
+        address: { type: String, default: "" },
+        phoneNumber: { type: String, default: "" },
         avatar: {
             url: { type: String },
             id: { type: String }

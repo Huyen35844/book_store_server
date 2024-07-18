@@ -8,6 +8,7 @@ import jwt from "jsonwebtoken"
 import mongoose from "mongoose"
 import { access } from "fs"
 import PasswordResetTokenModel from "../models/PasswordResetTokenModel"
+import cloudUploader from "../cloud/index.js"
 
 const VERIFICATION_LINK = process.env.VERIFICATION_LINK
 const JWT_SECRET = process.env.JWT_SECRET
@@ -178,4 +179,38 @@ export const updateProfile = async (req, res) => {
     await UserModel.findByIdAndUpdate(req.user.id, name)
 
     res.json({ profile: { ...req.user, name } })
+}
+
+export const updateAvatar = async (req, res) => {
+    const { avatar } = req.files
+    console.log(avatar);
+    if (Array.isArray(avatar)) {
+        return sendErrorRes(res, "Muliple files are not allowed!", 400)
+    }
+    if (!avatar.mimetype.startsWith("image")) {
+        return sendErrorRes(res, "Invalid image file", 400)
+    }
+    const user = await UserModel.findById(req.user.id)
+    if (!user) return sendErrorRes(res, "User not found!", 400)
+
+    if (user.avatar.id) {
+        //remove avatar file
+        await cloudUploader.destroy(user.avatar.id)
+    }
+
+    //upload avatar file
+    const { secure_url: url, public_id: id } = await cloudUploader.upload(
+        avatar.filepath,
+        {
+            width: 300,
+            height: 300,
+            crop: "thumb",
+            gravity: "face",
+        }
+    )
+
+    user.avatar = { url, id }
+    await user.save()
+
+    res.json({ profile: { ...req.user, avatar: user.avatar.url } })
 }
