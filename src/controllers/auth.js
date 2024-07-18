@@ -8,6 +8,7 @@ import jwt from "jsonwebtoken"
 import mongoose from "mongoose"
 import { access } from "fs"
 import PasswordResetTokenModel from "../models/PasswordResetTokenModel"
+import cloudUploader from "../cloud/index.js"
 
 const VERIFICATION_LINK = process.env.VERIFICATION_LINK
 const JWT_SECRET = process.env.JWT_SECRET
@@ -57,7 +58,7 @@ export const signIn = async (req, res) => {
     if (!isMatched) return sendErrorRes(res, "Email/Password is mismatch!", 400)
 
     const payload = { id: user._id }
-    const accessToken = jwt.sign(payload, JWT_SECRET, { expiresIn: "15m" })
+    const accessToken = jwt.sign(payload, JWT_SECRET, { expiresIn: "1m" })
     const refreshToken = jwt.sign(payload, JWT_SECRET)
 
     if (!user.tokens) user.tokens = [refreshToken]
@@ -86,17 +87,18 @@ export const getProfile = async (req, res) => {
 
 export const grantTokens = async (req, res) => {
     const { refreshToken } = req.body
+    console.log(refreshToken);
     if (!refreshToken) return sendErrorRes(res, "Unauthorized request!", 400)
-
     const payload = jwt.verify(refreshToken, JWT_SECRET)
+    console.log('Decoded Payload:', payload);
     if (!payload.id) return sendErrorRes(res, "Unauthorized request!", 400)
     const userId = new mongoose.Types.ObjectId(payload.id)
-
+    console.log(userId);
     const user = await UserModel.findOne({ _id: userId, tokens: refreshToken })
     if (!user) {
         //user is compromised, remove all the previous tokens
         await UserModel.findByIdAndUpdate(payload.id, { tokens: [] })
-        return sendErrorRes(res, "Unauthorized request!", 400)
+        return sendErrorRes(res, "Unauthorized request123!", 400)
     }
 
     const newRefreshToken = jwt.sign({ id: user._id }, JWT_SECRET)
@@ -169,13 +171,78 @@ export const updatePassword = async (req, res) => {
 }
 
 export const updateProfile = async (req, res) => {
-    const { name } = req.body
+    const { name, phoneNumber, address } = req.body
+    const { avatar } = req.files
 
-    if (typeof name != "string" || name.trim().length < 3) {
-        return sendErrorRes(res, "Invalid name!", 400)
+    if (Array.isArray(avatar)) {
+        return sendErrorRes(res, "Muliple files are not allowed!", 400)
+    }
+    // if (!avatar.mimetype.startsWith("image")) {
+    //     return sendErrorRes(res, "Invalid image file", 400)
+    // }
+    const user = await UserModel.findById(req.user.id)
+    if (!user) return sendErrorRes(res, "User not found!", 400)
+
+    if (user.avatar.id) {
+        //remove avatar file
+        await cloudUploader.destroy(user.avatar.id)
     }
 
-    await UserModel.findByIdAndUpdate(req.user.id, name)
+    //upload avatar file
+    const { secure_url: url, public_id: id } = await cloudUploader.upload(
+        avatar.filepath,
+        {
+            width: 300,
+            height: 300,
+            crop: "thumb",
+            gravity: "face",
+        }
+    )
 
-    res.json({ profile: { ...req.user, name } })
+    await UserModel.findByIdAndUpdate(req.user.id, { name, phoneNumber, address, avatar: { url, id } })
+
+    res.json({ profile: { ...req.user, name, phoneNumber, address, avatar: url } })
+}
+
+export const updateAvatar = async (req, res) => {
+    const { avatar } = req.files
+    if (Array.isArray(avatar)) {
+        return sendErrorRes(res, "Muliple files are not allowed!", 400)
+    }
+    if (!avatar.mimetype.startsWith("image")) {
+        return sendErrorRes(res, "Invalid image file", 400)
+    }
+    const user = await UserModel.findById(req.user.id)
+    if (!user) return sendErrorRes(res, "User not found!", 400)
+
+    if (user.avatar.id) {
+        //remove avatar file
+        await cloudUploader.destroy(user.avatar.id)
+    }
+
+    //upload avatar file
+    const { secure_url: url, public_id: id } = await cloudUploader.upload(
+        avatar.filepath,
+        {
+            width: 300,
+            height: 300,
+            crop: "thumb",
+            gravity: "face",
+        }
+    )
+
+    user.avatar = { url, id }
+    await user.save()
+
+    res.json({ profile: { ...req.user, avatar: user.avatar.url } })
+}
+
+export const generateVerificationLink = async (req, res) => {
+    const { id } = req.user
+    await AuthVerificationTokenModel.findOneAndDelete({ owner: id })
+    const token = crypto.randomBytes(36).toString("hex")
+    const link = `${VERIFICATION_LINK}?id=${id}&token=${token}`
+    await AuthVerificationTokenModel.create({ owner: id, token })
+    await mail.sendVerificationLink(req.user.email, link)
+    res.json({ message: "Please check your inbox!" })
 }
