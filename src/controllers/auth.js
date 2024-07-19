@@ -58,7 +58,7 @@ export const signIn = async (req, res) => {
     if (!isMatched) return sendErrorRes(res, "Email/Password is mismatch!", 400)
 
     const payload = { id: user._id }
-    const accessToken = jwt.sign(payload, JWT_SECRET, { expiresIn: "1m" })
+    const accessToken = jwt.sign(payload, JWT_SECRET, { expiresIn: "15m" })
     const refreshToken = jwt.sign(payload, JWT_SECRET)
 
     if (!user.tokens) user.tokens = [refreshToken]

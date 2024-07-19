@@ -44,7 +44,7 @@ const id = {
 }
 
 const phoneNumber = {
-    phoneNumber: yup.string().required("Phone number is missing!").matches(phoneNumberRegex)
+    phoneNumber: yup.string().required("Phone number is missing!").matches(phoneNumberRegex,"Phone number is invalid!")
 }
 
 const address = {
