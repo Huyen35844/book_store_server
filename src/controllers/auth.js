@@ -1,12 +1,11 @@
 import { log, profile } from "console"
 import AuthVerificationTokenModel from "../models/AuthVerificationTokenModel.js"
-import UserModel from "../models/userModel.js"
+import UserModel from "../models/UserModel.js"
 import { sendErrorRes } from "../utils/sendErrorRes.js"
 import crypto, { verify } from 'crypto'
 import mail from "../utils/mail.js"
 import jwt from "jsonwebtoken"
 import mongoose from "mongoose"
-import { access } from "fs"
 import PasswordResetTokenModel from "../models/PasswordResetTokenModel"
 import cloudUploader from "../cloud/index.js"
 
