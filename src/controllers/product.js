@@ -38,3 +38,23 @@ export const getProductsByCategory = async (req, res) => {
     res.json({ products: list })
 }
 
+export const searchProduct = async (req, res) => {
+    const name = req.query.name
+
+    const regex = new RegExp(name, 'i')
+    const products = await ProductModel.find({ name: regex }).limit(50)
+
+    const list = products.map((p) => {
+        return {
+            id: p._id,
+            name: p.name,
+            thumbnail: p.thumbnail,
+            category: p.category,
+            quantity: p.quantity,
+            price: p.price,
+            description: p.description
+        }
+    })
+    res.json({ products: list })
+}
+
