@@ -7,7 +7,6 @@ export const getLatestProducts = async (req, res) => {
         return {
             id: p._id,
             name: p.name,
-            thumbnail: p.thumbnail,
             category: p.category,
             quantity: p.quantity,
             price: p.price,
@@ -27,7 +26,6 @@ export const getProductsByCategory = async (req, res) => {
         return {
             id: p._id,
             name: p.name,
-            thumbnail: p.thumbnail,
             category: p.category,
             quantity: p.quantity,
             price: p.price,
@@ -48,7 +46,6 @@ export const searchProduct = async (req, res) => {
         return {
             id: p._id,
             name: p.name,
-            thumbnail: p.thumbnail,
             category: p.category,
             quantity: p.quantity,
             price: p.price,
