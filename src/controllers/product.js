@@ -9,6 +9,7 @@ export const getLatestProducts = async (req, res) => {
             name: p.name,
             thumbnail: p.thumbnail,
             category: p.category,
+            quantity: p.quantity,
             price: p.price,
             description: p.description
         }
@@ -17,6 +18,23 @@ export const getLatestProducts = async (req, res) => {
     res.json({ products: list })
 }
 
+export const getProductsByCategory = async (req, res) => {
+    const category = req.params.category
 
+    const products = await ProductModel.find({ category })
 
+    const list = products.map((p) => {
+        return {
+            id: p._id,
+            name: p.name,
+            thumbnail: p.thumbnail,
+            category: p.category,
+            quantity: p.quantity,
+            price: p.price,
+            description: p.description
+        }
+    })
+
+    res.json({ products: list })
+}
 
