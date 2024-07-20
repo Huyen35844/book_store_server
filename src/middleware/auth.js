@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import mongoose from 'mongoose';
 import { sendErrorRes } from '../utils/sendErrorRes.js';
-import UserModel from '../models/userModel.js';
+import UserModel from '../models/UserModel.js';
 import PasswordResetTokenModel from '../models/PasswordResetTokenModel';
 
 const JWT_SECRET = process.env.JWT_SECRET;

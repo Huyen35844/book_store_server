@@ -1,12 +1,11 @@
 import { log, profile } from "console"
 import AuthVerificationTokenModel from "../models/AuthVerificationTokenModel.js"
-import UserModel from "../models/userModel.js"
+import UserModel from "../models/UserModel.js"
 import { sendErrorRes } from "../utils/sendErrorRes.js"
 import crypto, { verify } from 'crypto'
 import mail from "../utils/mail.js"
 import jwt from "jsonwebtoken"
 import mongoose from "mongoose"
-import { access } from "fs"
 import PasswordResetTokenModel from "../models/PasswordResetTokenModel"
 import cloudUploader from "../cloud/index.js"
 
@@ -58,7 +57,7 @@ export const signIn = async (req, res) => {
     if (!isMatched) return sendErrorRes(res, "Email/Password is mismatch!", 400)
 
     const payload = { id: user._id }
-    const accessToken = jwt.sign(payload, JWT_SECRET, { expiresIn: "1m" })
+    const accessToken = jwt.sign(payload, JWT_SECRET, { expiresIn: "15m" })
     const refreshToken = jwt.sign(payload, JWT_SECRET)
 
     if (!user.tokens) user.tokens = [refreshToken]
