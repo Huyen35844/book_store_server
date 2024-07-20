@@ -7,6 +7,7 @@ export const getLatestProducts = async (req, res) => {
         return {
             id: p._id,
             name: p.name,
+            images: p.images?.map((i) => i.url),
             category: p.category,
             quantity: p.quantity,
             price: p.price,
@@ -27,6 +28,7 @@ export const getProductsByCategory = async (req, res) => {
             id: p._id,
             name: p.name,
             category: p.category,
+            images: p.images?.map((i) => i.url),
             quantity: p.quantity,
             price: p.price,
             description: p.description
@@ -47,6 +49,7 @@ export const searchProduct = async (req, res) => {
             id: p._id,
             name: p.name,
             category: p.category,
+            images: p.images?.map((i) => i.url),
             quantity: p.quantity,
             price: p.price,
             description: p.description
