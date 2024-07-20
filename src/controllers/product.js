@@ -1,3 +1,4 @@
+import { isValidObjectId } from "mongoose"
 import ProductModel from "../models/productModel.js"
 
 export const getLatestProducts = async (req, res) => {
@@ -58,3 +59,10 @@ export const searchProduct = async (req, res) => {
     res.json({ products: list })
 }
 
+export const getDetailProductById = async (req, res) => {
+    const id = req.params.id
+    console.log(id);
+    if (!isValidObjectId(id)) return sendErrorRes(res, "Invalid product id!", 400)
+    const product = await ProductModel.findById(id)
+    res.json({ product })
+}
