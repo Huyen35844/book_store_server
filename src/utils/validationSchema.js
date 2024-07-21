@@ -36,7 +36,7 @@ const id = {
         .string()
         .test({
             name: "valid-id",
-            message: "Invalid user id",
+            message: "Invalid id",
             test: (value) => {
                 return isValidObjectId(value)
             }
@@ -44,7 +44,7 @@ const id = {
 }
 
 const phoneNumber = {
-    phoneNumber: yup.string().required("Phone number is missing!").matches(phoneNumberRegex,"Phone number is invalid!")
+    phoneNumber: yup.string().required("Phone number is missing!").matches(phoneNumberRegex, "Phone number is invalid!")
 }
 
 const address = {
@@ -75,6 +75,31 @@ export const updateProfileSchema = yup.object({
     ...address,
     ...phoneNumber
 })
+
+export const cartValidationSchema = yup.object({
+    owner: yup
+        .string()
+        .required("Owner is required")
+        .test({
+            name: "valid-id",
+            message: "Invalid id",
+            test: (value) => {
+                return isValidObjectId(value)
+            }
+        }),
+    productId: yup
+        .string()
+        .required("Product id is required")
+        .test({
+            name: "valid-id",
+            message: "Invalid id",
+            test: (value) => {
+                return isValidObjectId(value)
+            }
+        }),
+    amount: yup.number().required("Amount is required").positive().integer(),
+});
+
 
 
 

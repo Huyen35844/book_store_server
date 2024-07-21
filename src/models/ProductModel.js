@@ -18,7 +18,6 @@ const ProductSchema = new Schema({
             id: String,
         },
     ],
-    thumbnail: String,
 }, { timestamps: true })
 
 const ProductModel = model("Product", ProductSchema)
