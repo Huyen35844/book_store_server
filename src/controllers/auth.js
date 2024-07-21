@@ -176,9 +176,9 @@ export const updateProfile = async (req, res) => {
     if (Array.isArray(avatar)) {
         return sendErrorRes(res, "Muliple files are not allowed!", 400)
     }
-    // if (!avatar.mimetype.startsWith("image")) {
-    //     return sendErrorRes(res, "Invalid image file", 400)
-    // }
+    if (!avatar.mimetype.startsWith("image")) {
+        return sendErrorRes(res, "Invalid image file", 400)
+    }
     const user = await UserModel.findById(req.user.id)
     if (!user) return sendErrorRes(res, "User not found!", 400)
 
