@@ -100,6 +100,21 @@ export const cartValidationSchema = yup.object({
     amount: yup.number().required("Amount is required").positive().integer(),
 });
 
+export const InvoiceSchema = yup.object({
+    owner: yup
+        .string()
+        .required("Owner is required")
+        .test({
+            name: "valid-id",
+            message: "Invalid id",
+            test: (value) => {
+                return isValidObjectId(value)
+            }
+        }),
+    products: yup.array().required('Products are required'),
+    total: yup.number().required('Total is required').positive('Total must be positive')
+})
+
 
 
 
