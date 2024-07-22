@@ -115,6 +115,29 @@ export const InvoiceSchema = yup.object({
     total: yup.number().required('Total is required').positive('Total must be positive')
 })
 
+export const FavoriteSchema = yup.object({
+    owner: yup
+        .string()
+        .required("Owner is required")
+        .test({
+            name: "valid-id",
+            message: "Invalid id",
+            test: (value) => {
+                return isValidObjectId(value)
+            }
+        }),
+    productId: yup
+        .string()
+        .required("Product id is required")
+        .test({
+            name: "valid-id",
+            message: "Invalid id",
+            test: (value) => {
+                return isValidObjectId(value)
+            }
+        }),
+})
+
 
 
 

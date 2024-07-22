@@ -28,7 +28,7 @@ export const signUp = async (req, res) => {
 
     await mail.sendVerificationLink(user.email, link)
 
-    res.json({ message: "Please check your inbox!" })
+    res.json("Please check your inbox!")
 }
 
 
@@ -44,7 +44,7 @@ export const verifyEmail = async (req, res) => {
     await AuthVerificationTokenModel.findByIdAndDelete(authToken._id)
     await UserModel.findByIdAndUpdate(id, { verified: true })
 
-    res.json({ message: "Thank you for joining us, your email is verified!" })
+    res.json("Thank you for joining us, your email is verified!")
 }
 
 export const signIn = async (req, res) => {
@@ -143,7 +143,7 @@ export const generateForgetPasswordLink = async (req, res) => {
     const link = `${PASSWORD_RESET_LINK}?id=${user._id}&token=${token}`
     await mail.sendPasswordResetLink(user.email, link)
 
-    res.json({ message: "Please check your inbox!" })
+    res.json("Please check your inbox!")
 }
 
 
@@ -166,7 +166,7 @@ export const updatePassword = async (req, res) => {
     await PasswordResetTokenModel.findOneAndDelete({ owner: user._id })
 
     await mail.sendPasswordUpdateMessage(user.email)
-    res.json({ message: "Password resets successfully" })
+    res.json("Password resets successfully")
 }
 
 export const updateProfile = async (req, res) => {
@@ -243,5 +243,5 @@ export const generateVerificationLink = async (req, res) => {
     const link = `${VERIFICATION_LINK}?id=${id}&token=${token}`
     await AuthVerificationTokenModel.create({ owner: id, token })
     await mail.sendVerificationLink(req.user.email, link)
-    res.json({ message: "Please check your inbox!" })
+    res.json("Please check your inbox!")
 }
