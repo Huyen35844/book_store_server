@@ -3,11 +3,11 @@ import FavoriteModel from "../models/FavoriteModel.js"
 export const addToFavorite = async (req, res) => {
     const { owner, productId } = req.body
     const product = await FavoriteModel.findOne({ owner, productId })
-    if (product) return res.json({ message: "This product has already added to favorite!" })
+    if (product) return res.json("This product has already added to favorite!")
     else
 
         await FavoriteModel.create({ owner, productId })
-    res.json({ message: "Add to favorite successfully!" })
+    res.json("Add to favorite successfully!")
 }
 
 export const getFavoriteList = async (req, res) => {
@@ -31,7 +31,7 @@ export const getFavoriteList = async (req, res) => {
 export const deleteFavorite = async (req, res) => {
     const { productId } = req.params
     await FavoriteModel.deleteOne({ productId })
-    res.json({ message: "Deleted successfully" })
+    res.json("Deleted successfully")
 }
 
 export const isInFavorite = async (req, res) => {

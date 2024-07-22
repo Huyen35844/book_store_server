@@ -9,19 +9,19 @@ export const addToCart = async (req, res) => {
     } else {
         await CartModel.create({ owner, productId, amount })
     }
-    res.json({ message: "Add to cart successfully!" })
+    res.json("Add to cart successfully!")
 }
 
 export const deleteProductFromCart = async (req, res) => {
     const { id } = req.body
     await CartModel.findByIdAndDelete(id)
-    res.json({ message: "Delete the product successfully" })
+    res.json("Delete the product successfully")
 }
 
 export const updateCart = async (req, res) => {
     const { amount, cartId } = req.body
     await CartModel.findByIdAndUpdate(cartId, { amount })
-    res.json({ message: "Update the product successfully" })
+    res.json( "Update the product successfully" )
 }
 
 export const getCartByUser = async (req, res) => {

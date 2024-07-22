@@ -11,7 +11,7 @@ const UserSchema = new Schema(
         address: { type: String, default: "" },
         phoneNumber: { type: String, default: "" },
         avatar: {
-            url: { type: String },
+            url: { type: String, default: "https://cdn-icons-png.flaticon.com/512/61/61205.png" },
             id: { type: String }
         }
     },
