@@ -18,6 +18,7 @@ export const isAuth = async (req, res, next) => {
         const userId = new mongoose.Types.ObjectId(payload.id)
         const user = await UserModel.findById(userId);
         if (!user) return sendErrorRes(res, 'Unauthorized request!', 400);
+        if (!user.verified) return sendErrorRes(res, 'Please verify your email first!', 400);
         req.user = {
             id: userId,
             name: user.name,
