@@ -6,7 +6,7 @@ const fileParer = async (req, res, next) => {
     const [fields, files] = await form.parse(req)
     if (!req.body) req.body = {}
 
-    //Ví dụ dữ liệu fields
+    //Data example fields
     // {
     //   "username": [
     //     "john_doe"
@@ -19,7 +19,7 @@ const fileParer = async (req, res, next) => {
 
     if (!req.files) req.files = {}
 
-    //Ví dụ dữ liệu files
+    //Data example files
     // {
     //   "avatar": [
     //     {
