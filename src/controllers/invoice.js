@@ -8,6 +8,7 @@ export const addToInvoice = async (req, res) => {
 
 export const getInvoiceByUser = async (req, res) => {
     const { owner } = req.params
+    
     const invoices = await InvoiceModel.find({ owner })
         .populate({
             path: 'products.productId',

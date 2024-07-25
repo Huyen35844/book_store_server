@@ -2,6 +2,7 @@ import CartModel from "../models/CartModel.js"
 
 export const addToCart = async (req, res) => {
     const { owner, productId, amount } = req.body
+
     const existProductInCart = await CartModel.findOne({ productId })
     if (existProductInCart) {
         existProductInCart.amount += amount
@@ -9,6 +10,7 @@ export const addToCart = async (req, res) => {
     } else {
         await CartModel.create({ owner, productId, amount })
     }
+
     res.json("Add to cart successfully!")
 }
 
@@ -27,7 +29,7 @@ export const updateCart = async (req, res) => {
 export const getCartByUser = async (req, res) => {
     const { owner } = req.params
     const carts = await CartModel.find({ owner }).populate("productId")
-    console.log(carts);
+
     const list = carts.map((c) => {
         return {
             id: c._id,
@@ -41,5 +43,6 @@ export const getCartByUser = async (req, res) => {
             price: c.productId.price
         }
     })
+    
     res.json({ list })
 }

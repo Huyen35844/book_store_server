@@ -7,6 +7,7 @@ import { addToInvoice, getInvoiceByUser } from "../controllers/invoice.js";
 const invoiceRouter = Router()
 
 invoiceRouter.post("/add", isAuth, validate(InvoiceSchema), addToInvoice)
+
 invoiceRouter.get("/get-cart-by-user/:owner", isAuth, getInvoiceByUser)
 
 export default invoiceRouter

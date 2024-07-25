@@ -143,10 +143,3 @@ export const FavoriteSchema = yup.object({
 
 
 
-/**
- * import * as yup để khi sử dụng bất kì thứ gì trong yup chỉ cần yup.   còn không phải import từng cái rất lâu
- * cấu trúc yup.object({})
- * tạo các object riêng cho từng thuộc tính muốn kiểm tra
- * mỗi object có tên riêng ví dụ password: yup.string()
- * 
- */

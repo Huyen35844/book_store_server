@@ -25,14 +25,3 @@ const validate = (schema) => {
 }
 
 export default validate
-
-/**
- * nhận tham số duy nhất là schema
- * vì là middleware function nên endpoint file vẫn cần sử dụng đến đoạn async(req, res) nên cần return đoạn đó
- * do là middleware nên có thêm next
- * dùng try catch để bắt lỗi riêng cho yup
- * schema.validate(req.body, options)
- * validate xong next() đến các nhiệm vụ tiếp
- * catch nếu là lỗi từ yup thì thông báo sendErrorRes
- * ngược lại thì next(error) cho bên async express error xử lí lỗi 
- */

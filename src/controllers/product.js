@@ -4,7 +4,9 @@ import { sendErrorRes } from "../utils/sendErrorRes.js"
 
 export const getLatestProducts = async (req, res) => {
     const { limit = "10", page = "1" } = req.query
+
     const products = await ProductModel.find().sort("createdAt").skip((+page - 1) * +limit).limit(+limit)
+
     const list = products.map((p) => {
         return {
             id: p._id,
@@ -62,8 +64,12 @@ export const searchProduct = async (req, res) => {
 
 export const getDetailProductById = async (req, res) => {
     const id = req.params.id
+
     if (!isValidObjectId(id)) return sendErrorRes(res, "Invalid product id!", 400)
+
     const product = await ProductModel.findById(id)
+    if (!product) return sendErrorRes(res, "Couldn't find the product!", 400)
+        
     res.json({
         id: product._id,
         name: product.name,
