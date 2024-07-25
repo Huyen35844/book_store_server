@@ -28,14 +28,4 @@ app.listen(8000, () => {
     console.log('The app is running on http://localhost:8000');
 })
 
-/**
- * Sử dụng express nên là app = express()
- * dùng middleware của express để chuyển đổi dữ liệu từ client json() sang đối tượng javascript gắn vào req.body
- * dùng middleware của express để chuyển đổi dữ liệu từ client urlencoded() sang đối tượng javascript gắn vào req.body
- * khai báo các router
- * xử lí lỗi trong quá trình một lần duy nhất bằng cách sử dụng express-async-error
- * app.listen khai báo port và callback thông báo đang chạy
- * kết nối với db mongo đơn giản bằng cách import
- * thêm import cho thư viện dotenv trên cùng
- * thêm express.static() để tải các thành phần html, css lên
- */
+

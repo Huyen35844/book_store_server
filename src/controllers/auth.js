@@ -1,8 +1,7 @@
-import { log, profile } from "console"
 import AuthVerificationTokenModel from "../models/AuthVerificationTokenModel.js"
 import UserModel from "../models/UserModel.js"
 import { sendErrorRes } from "../utils/sendErrorRes.js"
-import crypto, { verify } from 'crypto'
+import crypto from 'crypto'
 import mail from "../utils/mail.js"
 import jwt from "jsonwebtoken"
 import mongoose from "mongoose"
@@ -86,14 +85,14 @@ export const getProfile = async (req, res) => {
 
 export const grantTokens = async (req, res) => {
     const { refreshToken } = req.body
-    console.log(refreshToken);
     if (!refreshToken) return sendErrorRes(res, "Unauthorized request!", 400)
+
     const payload = jwt.verify(refreshToken, JWT_SECRET)
-    console.log('Decoded Payload:', payload);
     if (!payload.id) return sendErrorRes(res, "Unauthorized request!", 400)
+
     const userId = new mongoose.Types.ObjectId(payload.id)
-    console.log(userId);
     const user = await UserModel.findOne({ _id: userId, tokens: refreshToken })
+    
     if (!user) {
         //user is compromised, remove all the previous tokens
         await UserModel.findByIdAndUpdate(payload.id, { tokens: [] })
@@ -238,10 +237,15 @@ export const updateAvatar = async (req, res) => {
 
 export const generateVerificationLink = async (req, res) => {
     const { id } = req.user
+
     await AuthVerificationTokenModel.findOneAndDelete({ owner: id })
+
     const token = crypto.randomBytes(36).toString("hex")
     const link = `${VERIFICATION_LINK}?id=${id}&token=${token}`
+
     await AuthVerificationTokenModel.create({ owner: id, token })
+
     await mail.sendVerificationLink(req.user.email, link)
+
     res.json("Please check your inbox!")
 }

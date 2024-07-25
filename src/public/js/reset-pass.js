@@ -31,7 +31,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
 
     if (!res.ok) {
-        const { message } = await res.json()
+        const message = await res.json()
         messageTag.innerText = message
         messageTag.classList.add('error')
         return
@@ -74,12 +74,13 @@ const handleSubmit = async (evt) => {
         },
         body: JSON.stringify({ id, token, password: password.value })
     })
+    console.log(res);
 
     submitBtn.disabled = false
     submitBtn.innerText = "Update Password"
 
     if (!res.ok) {
-        const { message } = await res.json()
+        const message = await res.json()
         return displayNotification(message, "error")
     }
 

@@ -35,11 +35,3 @@ const UserModel = model("User", UserSchema)
 export default UserModel;
 
 
-
-/**
- * cấu trúc model(name, schema)
- * tạo new schema cho các thuộc tính
- * vì sử dụng bcrypt với mục đích mã hóa mật khẩu nên 
- * trước khi lưu schema cần mã hóa mật khẩu (genSalt, hash)
- * và tạo hàm compare trong schema được cung cấp bở bcrypt so sánh mật khẩu đã mã hóa trong db và mật khẩu chưa mã hóa
- */
